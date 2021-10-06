@@ -24,60 +24,60 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.mitocode.exception.ModelNotFoundException;
-import com.mitocode.model.Paciente;
-import com.mitocode.service.IPacienteService;
+import com.mitocode.model.Examen;
+import com.mitocode.service.IExamenService;
 @RestController
-@RequestMapping("/pacientes")
-public class PacienteController {
+@RequestMapping("/examenes")
+public class ExamenController {
 
 	@Autowired
-	private IPacienteService service;
+	private IExamenService service;
 	
 	@GetMapping	
-	public ResponseEntity<List<Paciente>> listar(){
-		List<Paciente> lista = service.listar();
-		return new ResponseEntity<List<Paciente>>(lista, HttpStatus.OK);
+	public ResponseEntity<List<Examen>> listar(){
+		List<Examen> lista = service.listar();
+		return new ResponseEntity<List<Examen>>(lista, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Paciente> leerPorId(@PathVariable("id") Integer id){
-		Paciente obj = service.leerPorId(id);
+	public ResponseEntity<Examen> leerPorId(@PathVariable("id") Integer id){
+		Examen obj = service.leerPorId(id);
 		if(obj == null) {
 			throw new ModelNotFoundException("ID NO ENCONTRADO: " + id);
 		}
-		return new ResponseEntity<Paciente>(obj, HttpStatus.OK);
+		return new ResponseEntity<Examen>(obj, HttpStatus.OK);
 	}
 	
 	@GetMapping("/hateoas/{id}")
-	public Resource<Paciente> leerPorIdHateoas(@PathVariable("id") Integer id) {
-		Paciente obj = service.leerPorId(id);
+	public Resource<Examen> leerPorIdHateoas(@PathVariable("id") Integer id) {
+		Examen obj = service.leerPorId(id);
 		if(obj == null) {
 			throw new ModelNotFoundException("ID NO ENCONTRADO: " + id);
 		}
-		Resource<Paciente> resource = new Resource<Paciente>(obj);
+		Resource<Examen> resource = new Resource<Examen>(obj);
 		// localhost:8080/pacientes/hateoas/{id}
 		ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).leerPorId(id));
-		resource.add(linkTo.withRel("Paciente-resource"));
+		resource.add(linkTo.withRel("Examen-resource"));
 		return resource;
 		
 	}
 	
 	@PostMapping
-	public ResponseEntity <Object> registrar(@Valid @RequestBody Paciente pac) {
-		Paciente paciente = service.registrar(pac);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(paciente.getIdPaciente()).toUri();
+	public ResponseEntity <Object> registrar(@Valid @RequestBody Examen pac) {
+		Examen paciente = service.registrar(pac);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(paciente.getIdExamen()).toUri();
 		return ResponseEntity.created(location).build();
 	}
 	
 	@PutMapping
-	public ResponseEntity <Object> modificar(@Valid @RequestBody Paciente pac) {
+	public ResponseEntity <Object> modificar(@Valid @RequestBody Examen pac) {
 		service.modificar(pac);
 		return new ResponseEntity<Object>(HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> eliminar(@PathVariable("id") Integer id) {
-		Paciente obj = service.leerPorId(id);
+		Examen obj = service.leerPorId(id);
 		if(obj == null) {
 			throw new ModelNotFoundException("ID NO ENCONTRADO: " + id);
 		}
